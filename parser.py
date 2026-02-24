@@ -51,8 +51,6 @@ class HalsteadRust:
         if token in RUST_TYPES:
             return None
         
-        
-        
         if token in self.function_calls:
             return None
 
@@ -75,8 +73,8 @@ class HalsteadRust:
         if NUMBER_RE.match(token):
             return ("operand", token)
 
-        if token.startswith('"') or token.startswith("'"):
-            return ("operand", token)
+        # if token.startswith('"') or token.startswith("'"):
+           # return ("operand", token)
 
         return None
 

@@ -47,8 +47,7 @@ fn main() {
     println!("{}", !x);
 
     println!("{}", factorial(6));
-    println!("{}", sum_numbers(15));
-
+    
     number_type(0);
     number_type(5);
     number_type(12);
