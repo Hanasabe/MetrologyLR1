@@ -22,6 +22,16 @@ RUST_OPERATORS = {
     "->", "::", ".", "..", "..=", "?", "@", ":"
 }
 
+RUST_TYPES = {
+    "i8", "i16", "i32", "i64", "i128", "isize",
+    "u8", "u16", "u32", "u64", "u128", "usize",
+    "f32", "f64",
+    "bool",
+    "char",
+    "str",
+    "String"
+}
+
 IDENT_RE = re.compile(r'^[A-Za-z_][A-Za-z0-9_]*$')
 NUMBER_RE = re.compile(r'^[0-9][0-9_]*([.][0-9_]+)?$')
 
@@ -31,14 +41,30 @@ class HalsteadRust:
         self.source = source_bytes
         self.operators = defaultdict(int)
         self.operands = defaultdict(int)
+        self.function_calls = set()
 
-    def classify_token(self, token):
+    def classify_token(self, token, node_type=None):
         token = token.strip()
         if not token:
             return None
         
+        if token in RUST_TYPES:
+            return None
+        
+        
+        
+        if token in self.function_calls:
+            return None
+
+        
         if token in ("{", "}"):
             return ("op", "{}")
+        
+        if token == "if":
+            return("op", "if...else")
+        
+        if token == "else":
+            return None
 
         if token in RUST_OPERATORS or token in RUST_KEYWORDS:
             return ("op", token)
@@ -55,9 +81,30 @@ class HalsteadRust:
         return None
 
     def visit(self, node):
+        if node.type == "call_expression":
+            function_node = node.child_by_field_name("function")
+            if function_node:
+                name = self.source[function_node.start_byte:function_node.end_byte].decode("utf8", errors="ignore")
+                self.operators["вызов функции"] += 1
+                self.function_calls.add(name)
+            for child in node.children:
+                self.visit(child)
+            return
+
+        # Макрос
+        if node.type == "macro_invocation":
+            macro_node = node.child_by_field_name("macro")
+            if macro_node:
+                name = self.source[macro_node.start_byte:macro_node.end_byte].decode("utf8", errors="ignore")
+                self.operators["вызов функции"] += 1
+                self.function_calls.add(name)
+            for child in node.children:
+                self.visit(child)
+            return
+        
         if node.child_count == 0:
             text = self.source[node.start_byte:node.end_byte].decode("utf8", errors="ignore")
-            result = self.classify_token(text)
+            result = self.classify_token(text, node.type)
             if result:
                 kind, value = result
                 if kind == "op":

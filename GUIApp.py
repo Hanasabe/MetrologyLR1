@@ -7,7 +7,7 @@ class RustParserApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Анализатор метрик Холстеда (Rust)")
-        self.root.configure(bg="#e2dbcc")
+        self.root.configure(bg="#999999")
         self.root.geometry('712x500')
         self.root.resizable(False, False)
 
