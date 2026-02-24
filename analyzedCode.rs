@@ -101,9 +101,4 @@ fn main() {
         if i > 2 { break; }
         println!("{}", i);
     }
-
-    let arr = [1, 2, 3];
-    for x in arr {
-        println!("{}", x);
-    }
 }
