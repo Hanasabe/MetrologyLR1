@@ -76,7 +76,6 @@ fn main() {
     let mut val = 10;
     val += 5;
     val *= 2;
-<<<<<<< HEAD:AnalyzedCode.rs
     println!("{}", val);
 
     let c = a + b * val;
@@ -108,7 +107,3 @@ fn main() {
         println!("{}", x);
     }
 }
-=======
-    println!("Result after operations: {}", val);
-}
->>>>>>> b60674e14610859c07b3ba4c16f3dd2eb8d102da:analyzedCode.rs
